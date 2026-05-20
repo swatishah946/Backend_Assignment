@@ -1,11 +1,3 @@
-Your README is breaking because of a few Markdown syntax issues:
-
-* The Mermaid code block is not closed properly with triple backticks.
-* The `graph TD` section is incomplete.
-* Some headings and lists are accidentally inside the Mermaid block.
-* A few formatting inconsistencies exist (`onauth` → `on auth`, spacing issues, etc.).
-
-Here’s the corrected final README you can directly paste into `README.md`:
 
 ````markdown
 # Scalable REST API with RBAC & React Portal
