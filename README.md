@@ -140,6 +140,59 @@ If you prefer running without Docker, follow these steps to use SQLite:
 
 ---
 
+## 🏗️ Systems Architecture
+
+The project is structured as a containerized monorepo where the browser communicates exclusively with port `80` (Nginx). Nginx handles the routing, serving static React SPA files for frontend paths, and acting as a reverse-proxy forwarding API calls to the Express container.
+
+```mermaid
+graph TD
+    subgraph Client [Browser Client]
+        UI["React SPA (Vite + TS)"]
+    end
+
+    subgraph Ingress [Ingress Gateway]
+        Nginx["Nginx Reverse Proxy (Port 80)"]
+    end
+
+    subgraph Application [Application Service]
+        Express["Express API Server (Port 5000)"]
+        Validators["Zod Input Validators"]
+        Controllers["Controllers (HTTP Handlers)"]
+        Services["Business Logic (Auth/Tasks)"]
+        Repos["Data Repositories"]
+        Prisma["Prisma ORM Client"]
+    end
+
+    subgraph DataLayer [Data Storage]
+        Postgres[("PostgreSQL DB (Port 5432)")]
+    end
+
+    %% Communication Flow
+    UI -->|"HTTP / HTTPS Requests"| Nginx
+    Nginx -->|"Serves Static Files"| UI
+    Nginx -->|"Proxies /api/v1/* calls"| Express
+    Express --> Validators
+    Validators --> Controllers
+    Controllers --> Services
+    Services --> Repos
+    Repos --> Prisma
+    Prisma -->|"SQL Queries"| Postgres
+```
+
+---
+
+## 📸 Screenshots & Previews
+
+### 💻 Modern Dark-Mode Task Dashboard
+*Visual representation of the user task management page, featuring glassmorphism layout panels, neon highlights, and custom priority badges:*
+![Dashboard Mockup](docs/dashboard_mockup.png)
+
+### 📊 System Administration & Analytics Panel
+*Visual representation of the administrative control workspace, showcasing system aggregate progress metrics and user account elevation controls:*
+![Admin Mockup](docs/admin_mockup.png)
+
+---
+
 ## 🔒 Security Architectures
 1. **Password Cryptography:** Password inputs are hashed using **bcrypt** with a cost factor of 12 before database insertion, protecting credentials against database-leak precomputation tables.
 2. **Defensive Headers:** Incorporates **Helmet** to block scripting injections, clickjacking, and mime-sniffing.
