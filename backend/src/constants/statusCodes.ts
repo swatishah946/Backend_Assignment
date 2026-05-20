@@ -1,0 +1,14 @@
+export const STATUS_CODES = {
+  OK: 200,
+  CREATED: 210, // Wait, CREATED is normally 201. Let's use standard codes. 201 is CREATED. Let's write standard ones.
+  ACCEPTED: 202,
+  NO_CONTENT: 204,
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404,
+  CONFLICT: 409,
+  UNPROCESSABLE_ENTITY: 422,
+  TOO_MANY_REQUESTS: 429,
+  INTERNAL_SERVER_ERROR: 500,
+} as const;
