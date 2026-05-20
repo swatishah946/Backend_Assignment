@@ -1,4 +1,4 @@
-# Primetrade.ai Backend Assignment - Scalable REST API with RBAC & React Portal
+#  Scalable REST API with RBAC & React Portal
 
 This repository contains a production-grade implementation of the Backend Developer Intern assignment for **Primetrade.ai**. It features a secure, type-safe REST API built with Node.js, TypeScript, and Express, utilizing Prisma ORM, and paired with a premium glassmorphic React dashboard frontend.
 
