@@ -1,66 +1,94 @@
-#  Scalable REST API with RBAC & React Portal
+Your README is breaking because of a few Markdown syntax issues:
 
-This repository contains a production-grade implementation of the Backend Developer Intern assignment for **Primetrade.ai**. It features a secure, type-safe REST API built with Node.js, TypeScript, and Express, utilizing Prisma ORM, and paired with a premium glassmorphic React dashboard frontend.
+* The Mermaid code block is not closed properly with triple backticks.
+* The `graph TD` section is incomplete.
+* Some headings and lists are accidentally inside the Mermaid block.
+* A few formatting inconsistencies exist (`onauth` → `on auth`, spacing issues, etc.).
+
+Here’s the corrected final README you can directly paste into `README.md`:
+
+````markdown
+# Scalable REST API with RBAC & React Portal
+
+This repository contains a production-grade implementation of the Backend Developer Intern assignment for Primetrade.ai. It features a secure, type-safe REST API built with Node.js, TypeScript, and Express, utilizing Prisma ORM, and paired with a premium glassmorphic React dashboard frontend.
 
 ---
 
 ## 🚀 Key Features
 
 ### 🔒 Core Backend (Primary Focus)
-* **Clean Layered Architecture:** Decouples the transport layer (Controllers), input validators (Zod Schemas), database layers (Repositories), and core business logic (Services).
-* **Stateless Authentication:** Implements JWT access token authentication with secure password hashing (`bcryptjs` with 12 salt rounds).
-* **Role-Based Access Control (RBAC):** Restricts endpoints using a variadic middleware pipeline (`USER` vs `ADMIN`).
-* **IDOR (Insecure Direct Object Reference) Mitigation:** Ensures users can only mutate/view tasks they own by deriving query scopes directly from cryptographically verified JWT claims.
-* **OpenAPI Explorer:** Integrates Swagger UI hosted directly by the server at `/api/v1/docs`.
-* **Database Portability:** Uses Prisma ORM, configured for **PostgreSQL** in containerized environments and easily fallback-able to **SQLite** for zero-setup local dev.
+
+- **Clean Layered Architecture:** Decouples the transport layer (Controllers), input validators (Zod Schemas), database layers (Repositories), and core business logic (Services).
+- **Stateless Authentication:** Implements JWT access token authentication with secure password hashing (`bcryptjs` with 12 salt rounds).
+- **Role-Based Access Control (RBAC):** Restricts endpoints using a variadic middleware pipeline (`USER` vs `ADMIN`).
+- **IDOR (Insecure Direct Object Reference) Mitigation:** Ensures users can only mutate/view tasks they own by deriving query scopes directly from cryptographically verified JWT claims.
+- **OpenAPI Explorer:** Integrates Swagger UI hosted directly by the server at `/api/v1/docs`.
+- **Database Portability:** Uses Prisma ORM, configured for PostgreSQL in containerized environments and easily fallback-able to SQLite for zero-setup local development.
 
 ### 💻 Responsive Frontend (Supportive)
-* **Vite + React + TypeScript:** Built with typescript for complete type safety.
-* **Premium UI/UX:** Styled using pure Vanilla CSS with custom properties (CSS variables). Features glassmorphic cards, neon glows, responsive grid structures, dark-mode styling, and micro-animations.
-* **Secure Session Context:** Centralized `AuthContext` managing tokens and user states with request/response interceptors to attach tokens automatically and clear sessions on expiry (401).
-* **Admin dashboard panel:** Accessible only to admins, showing system-wide statistics (aggregates) and a user roles configuration controller.
+
+- **Vite + React + TypeScript:** Built with TypeScript for complete type safety.
+- **Premium UI/UX:** Styled using pure Vanilla CSS with custom properties (CSS variables). Features glassmorphic cards, neon glows, responsive grid structures, dark-mode styling, and micro-animations.
+- **Secure Session Context:** Centralized `AuthContext` managing tokens and user states with request/response interceptors to attach tokens automatically and clear sessions on expiry (`401`).
+- **Admin Dashboard Panel:** Accessible only to admins, showing system-wide statistics (aggregates) and a user roles configuration controller.
 
 ---
 
 ## 🛠️ Tech Stack
 
-* **Backend:** Node.js, TypeScript, Express.js, Prisma ORM, PostgreSQL (Docker) / SQLite (Local)
-* **Frontend:** React.js (Vite), TypeScript, Axios, Lucide Icons, Vanilla CSS
-* **Orchestration:** Docker, Docker Compose, Nginx
+### Backend
+- Node.js
+- TypeScript
+- Express.js
+- Prisma ORM
+- PostgreSQL (Docker)
+- SQLite (Local)
+
+### Frontend
+- React.js (Vite)
+- TypeScript
+- Axios
+- Lucide Icons
+- Vanilla CSS
+
+### DevOps & Infrastructure
+- Docker
+- Docker Compose
+- Nginx
 
 ---
 
 ## 📁 Directory Structure
 
-```
+```text
 primetrade-assignment/
-├── package.json (concurrency scripts)
-├── README.md (project docs)
-├── docker-compose.yml (orchestration config)
+├── package.json
+├── README.md
+├── docker-compose.yml
 ├── backend/
 │   ├── src/
-│   │   ├── config/ (Prisma config & OpenAPI spec file)
-│   │   ├── constants/ (HTTP Status Codes)
-│   │   ├── controllers/ (HTTP handlers)
-│   │   ├── middlewares/ (JWT validation, RBAC, error handler)
-│   │   ├── repositories/ (queries via Prisma)
-│   │   ├── services/ (core business logic)
-│   │   ├── utils/ (cryptography helpers & exceptions)
-│   │   ├── validators/ (Zod schemas)
-│   │   ├── routes/ (API routes mounting)
-│   │   └── server.ts (App listener)
-│   ├── prisma/ (db schemas)
+│   │   ├── config/
+│   │   ├── constants/
+│   │   ├── controllers/
+│   │   ├── middlewares/
+│   │   ├── repositories/
+│   │   ├── services/
+│   │   ├── utils/
+│   │   ├── validators/
+│   │   ├── routes/
+│   │   └── server.ts
+│   ├── prisma/
 │   ├── Dockerfile
 │   └── package.json
 └── frontend/
     ├── src/
-    │   ├── components/ (ProtectedRoute, TaskCard)
-    │   ├── context/ (AuthContext)
-    │   ├── layouts/ (Navbar/Layout shell)
-    │   ├── pages/ (Login, Register, Dashboard, AdminPanel)
-    │   ├── services/ (Axios client setup)
+    │   ├── components/
+    │   ├── context/
+    │   ├── layouts/
+    │   ├── pages/
+    │   ├── services/
     │   ├── App.tsx
-    │   └── index.css (Premium UI CSS System)
+    │   └── index.css
     ├── Dockerfile
     ├── nginx.conf
     └── package.json
@@ -70,154 +98,251 @@ primetrade-assignment/
 
 ## ⚡ Quick Start: Running the Project
 
-### Method 1: Using Docker (Recommended, Postgres-backed)
-Ensure you have Docker and Docker Compose installed. Execute the following command from the root directory:
+### Method 1: Using Docker (Recommended, PostgreSQL-backed)
+
+Ensure Docker Desktop and Docker Compose are installed.
+
+Run from the root directory:
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
-* **Frontend Dashboard:** Load `http://localhost` in your browser (Port 80).
-* **Backend API:** Access endpoints at `http://localhost:5000/api/v1`.
-* **API Documentation (Swagger):** Browse the interactive explorer at `http://localhost:5000/api/v1/docs`.
+### Services
+
+- **Frontend Dashboard:** `http://localhost`
+- **Backend API:** `http://localhost:5000/api/v1`
+- **Swagger Docs:** `http://localhost:5000/api/v1/docs`
 
 > [!TIP]
-> The very first user to register on the platform is automatically promoted to an **ADMIN** role to allow immediate access to the Admin Dashboard statistics panel!
+> The first registered user is automatically promoted to the `ADMIN` role for initial platform management access.
 
 ---
 
-### Method 2: Running Locally (SQLite-backed, Zero-Database installation)
-If you prefer running without Docker, follow these steps to use SQLite:
+## 💻 Method 2: Running Locally (SQLite-backed)
 
-#### 1. Setup Backend
-1. Open a terminal and navigate to the backend folder:
-   ```bash
-   cd backend
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Create a `.env` file by copying the template:
-   ```bash
-   copy .env.example .env
-   ```
-4. In your new `.env` file, swap the Postgres provider for SQLite by replacing the datasource block in `prisma/schema.prisma`:
-   ```prisma
-   // prisma/schema.prisma
-   datasource db {
-     provider = "sqlite"
-     url      = "file:./dev.db"
-   }
-   ```
-   And set your `.env` database URL:
-   ```env
-   DATABASE_URL="file:./dev.db"
-   ```
-5. Deploy migrations to create the local SQLite database file:
-   ```bash
-   npx prisma migrate dev --name init
-   ```
-6. Start the Express server in development mode:
-   ```bash
-   npm run dev
-   ```
+### 1. Backend Setup
 
-#### 2. Setup Frontend
-1. Open a second terminal and navigate to the frontend folder:
-   ```bash
-   cd frontend
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start the Vite React development server:
-   ```bash
-   npm run dev
-   ```
-4. Load the URL shown in your terminal (usually `http://localhost:5173`).
+Navigate into backend:
+
+```bash
+cd backend
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Create `.env`:
+
+```bash
+copy .env.example .env
+```
+
+Update `prisma/schema.prisma`:
+
+```prisma
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+```
+
+Update `.env`:
+
+```env
+DATABASE_URL="file:./dev.db"
+```
+
+Run migrations:
+
+```bash
+npx prisma migrate dev --name init
+```
+
+Start backend:
+
+```bash
+npm run dev
+```
 
 ---
 
+### 2. Frontend Setup
+
+Open another terminal:
+
+```bash
+cd frontend
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start frontend:
+
+```bash
+npm run dev
+```
+
+Frontend runs on:
+
+```text
+http://localhost:5173
+```
+
+---
 ## 🏗️ Systems Architecture
-
-The project is structured as a containerized monorepo where the browser communicates exclusively with port `80` (Nginx). Nginx handles the reverse-proxy routing, serving static React SPA assets for web application routes, and securely forwarding internal API traffic to the decoupled downstream Express engine.
 
 ```mermaid
 graph TD
-    subgraph Client [Browser Client]
+
+    subgraph Client
         UI["React SPA (Vite + TS)"]
     end
 
-    subgraph Ingress [Ingress Gateway]
+    subgraph Ingress
         Nginx["Nginx Reverse Proxy (Port 80)"]
     end
 
-    subgraph Application [Application Service]
+    subgraph Application
         Express["Express API Server (Port 5000)"]
-        Validators["Zod Input Validators"]
-        Controllers["Controllers (HTTP Handlers)"]
-        Services["Business Logic (Auth/Tasks)"]
-        Repos["Data Repositories"]
-        Prisma["Prisma ORM Client"]
+        Validators["Zod Validators"]
+        Controllers["Controllers"]
+        Services["Business Logic"]
+        Repositories["Repositories"]
+        Prisma["Prisma ORM"]
     end
 
-    subgraph DataLayer [Data Storage]
-        Postgres[("PostgreSQL DB (Port 5432)")]
+    subgraph Database
+        Postgres["PostgreSQL Database"]
     end
 
-    %% Communication Flow
     UI -->|"HTTP Requests"| Nginx
-    Nginx -->|"Serves Static Files"| UI
-    Nginx -->|"Proxies /api/v1/ routes"| Express
+    Nginx -->|"Serves React App"| UI
+    Nginx -->|"Proxies API Requests"| Express
     Express --> Validators
     Validators --> Controllers
     Controllers --> Services
-    Services --> Repos
-    Repos --> Prisma
+    Services --> Repositories
+    Repositories --> Prisma
     Prisma -->|"SQL Queries"| Postgres
-
----
+```
 
 ## 📸 Screenshots & Previews
 
 ### 💻 Modern Dark-Mode Task Dashboard
-*Visual representation of the user task management page, featuring glassmorphism layout panels, neon highlights, and custom priority badges:*
-![Dashboard Mockup](docs/Screenshot 2026-05-20 231420.png)
 
-### 📊 System Administration & Analytics Panel
-*Visual representation of the administrative control workspace, showcasing system aggregate progress metrics and user account elevation controls:*
-![Admin Mockup](docs/Screenshot 2026-05-20 231338.png)
+Visual representation of the user task dashboard featuring glassmorphism UI panels and neon highlights.
+
+![Dashboard](platform.png)
 
 ---
 
-## 🔒 Security Architectures
-1. **Password Cryptography:** Password inputs are hashed using **bcrypt** with a cost factor of 12 before database insertion, protecting credentials against database-leak precomputation tables.
-2. **Defensive Headers:** Incorporates **Helmet** to block scripting injections, clickjacking, and mime-sniffing.
-3. **Brute Force Protection:** Limits API request velocity onauth endpoints to 100 requests per 15 minutes.
-4. **Data Sanitization & Zod Schema Validation:** Requests are structured, validated, and sanitized at the Express routing boundary.
-5. **IDOR Mitigation:** The backend does *not* trust `userId` fields passed in payload bodies. User context is verified cryptographically via the authorization header, preventing malicious users from accessing or mutating other users' data.
+### 📊 Admin Analytics Panel
+
+Administrative dashboard displaying system statistics and user role management.
+
+![Admin Panel](docs/admin.png)
+
+## 🔒 Security Architecture
+
+### 1. Password Cryptography
+Passwords are hashed using `bcrypt` with a cost factor of `12` before database insertion.
+
+### 2. Defensive Headers
+Uses `Helmet` middleware to protect against:
+- Clickjacking
+- MIME sniffing
+- XSS vulnerabilities
+
+### 3. Brute Force Protection
+Rate limiting applied on authentication routes:
+- `100 requests / 15 minutes`
+
+### 4. Validation & Sanitization
+All request payloads are validated through Zod schemas before reaching the service layer.
+
+### 5. IDOR Mitigation
+The backend never trusts `userId` values from request payloads. Ownership is always derived from verified JWT claims.
 
 ---
 
 ## 📈 Scalability Write-up
 
-To scale this monolithic application from thousands to millions of concurrent users, the following systems design practices are recommended:
+### 1. PostgreSQL Read Replicas & Connection Pooling
 
-### 1. Database Clustering & Write-Read Segregation (PostgreSQL)
-* **Problem:** Large volumes of task listings compete with database write operations, causing CPU bottlenecks.
-* **Solution:** Establish a primary-replica Postgres cluster. Write queries route to the primary instance (handling ACID transactions), while read operations (listing/filtering tasks) are load-balanced across multiple read replicas.
-* **Tooling:** Deploy PgBouncer for connection pooling to reuse database connection threads and optimize memory allocation.
+#### Problem
+Heavy read traffic can bottleneck database performance.
 
-### 2. High-Performance In-Memory Caching (Redis)
-* **Problem:** Repeatedly querying static resource indexes hits database disk cycles.
-* **Solution:** Implement a *Cache-Aside* design pattern. When a user requests their tasks or stats, query Redis first. In the event of a cache miss, query Postgres, and serialize/cache the response in Redis with an appropriate TTL (e.g., 5 minutes) or invalidate it whenever the user creates, updates, or deletes a task.
+#### Solution
+- Primary node handles writes
+- Read replicas handle task listings and analytics
+- PgBouncer manages efficient connection pooling
 
-### 3. Horizontal Scale Out & Load Balancer (Nginx / HAProxy)
-* **Problem:** Node.js runs on a single-threaded event loop, which can lock up under heavy CPU validation/cryptography cycles.
-* **Solution:** Spin up multiple stateless backend Node containers in an ECS/Kubernetes cluster. Mount an Nginx reverse proxy at the edge of the network acting as a load balancer, distributing traffic across the healthy containers using a Round-Robin or Least-Connections algorithm.
+---
 
-### 4. Asynchronous Task Deferral via Message Queues (RabbitMQ / Apache Kafka)
-* **Problem:** Heavy analytical tasks, report exports, or email notifications block the request thread, slowing response times.
-* **Solution:** Decouple these slow actions. The Express router converts the task request into a lightweight message payload and inserts it into a queue (RabbitMQ/Kafka). The API returns a `202 Accepted` response immediately. Independent background worker processes consume tasks off the queue asynchronously.
+### 2. Redis Caching Layer
+
+#### Problem
+Repeated reads increase database load.
+
+#### Solution
+Implement Cache-Aside pattern:
+- Query Redis first
+- Fallback to PostgreSQL on cache miss
+- Cache responses with TTL
+- Invalidate cache on task mutation
+
+---
+
+### 3. Horizontal Scaling with Load Balancing
+
+#### Problem
+Node.js applications are single-threaded.
+
+#### Solution
+- Deploy multiple backend containers
+- Use Nginx or HAProxy for load balancing
+- Apply Round-Robin or Least-Connections routing
+
+---
+
+### 4. Async Background Processing
+
+#### Problem
+Heavy operations block request-response cycles.
+
+#### Solution
+Use RabbitMQ or Kafka:
+- API publishes async jobs
+- Workers consume messages independently
+- API immediately returns `202 Accepted`
+
+Examples:
+- Email notifications
+- Analytics generation
+- CSV/PDF exports
+- Audit logging
+
+---
+
+## ✅ Assignment Highlights
+
+- JWT Authentication
+- RBAC Authorization
+- Prisma ORM
+- Swagger/OpenAPI Docs
+- Dockerized Infrastructure
+- Secure Middleware Stack
+- Clean Architecture
+- Production-grade Frontend
+- PostgreSQL + SQLite Support
+- Nginx Reverse Proxy
+- Scalable System Design
+````
