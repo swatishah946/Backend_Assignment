@@ -142,7 +142,7 @@ If you prefer running without Docker, follow these steps to use SQLite:
 
 ## 🏗️ Systems Architecture
 
-The project is structured as a containerized monorepo where the browser communicates exclusively with port `80` (Nginx). Nginx handles the routing, serving static React SPA files for frontend paths, and acting as a reverse-proxy forwarding API calls to the Express container.
+The project is structured as a containerized monorepo where the browser communicates exclusively with port `80` (Nginx). Nginx handles the reverse-proxy routing, serving static React SPA assets for web application routes, and securely forwarding internal API traffic to the decoupled downstream Express engine.
 
 ```mermaid
 graph TD
@@ -168,16 +168,15 @@ graph TD
     end
 
     %% Communication Flow
-    UI -->|"HTTP / HTTPS Requests"| Nginx
+    UI -->|"HTTP Requests"| Nginx
     Nginx -->|"Serves Static Files"| UI
-    Nginx -->|"Proxies /api/v1/* calls"| Express
+    Nginx -->|"Proxies /api/v1/ routes"| Express
     Express --> Validators
     Validators --> Controllers
     Controllers --> Services
     Services --> Repos
     Repos --> Prisma
     Prisma -->|"SQL Queries"| Postgres
-```
 
 ---
 
@@ -185,11 +184,11 @@ graph TD
 
 ### 💻 Modern Dark-Mode Task Dashboard
 *Visual representation of the user task management page, featuring glassmorphism layout panels, neon highlights, and custom priority badges:*
-![Dashboard Mockup](docs/dashboard_mockup.png)
+![Dashboard Mockup](docs/Screenshot 2026-05-20 231420.png)
 
 ### 📊 System Administration & Analytics Panel
 *Visual representation of the administrative control workspace, showcasing system aggregate progress metrics and user account elevation controls:*
-![Admin Mockup](docs/admin_mockup.png)
+![Admin Mockup](docs/Screenshot 2026-05-20 231338.png)
 
 ---
 
