@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../services/api.ts';
-import { Users, BookOpen, ShieldCheck, RefreshCw, BarChart2, Star, CheckSquare } from 'lucide-react';
+import { Users, BookOpen, ShieldCheck, RefreshCw, BarChart2, Star } from 'lucide-react';
 
 interface Stats {
   totalUsers: number;
