@@ -1,0 +1,448 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Primetrade Task Management API",
+    "description": "Production-ready, type-safe REST API with JWT Authentication and Role-Based Access Control.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000/api/v1",
+      "description": "Local Development Server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Enter your JWT token (obtained from login/register) to access protected endpoints."
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "email": { "type": "string", "format": "email" },
+          "name": { "type": "string" },
+          "role": { "type": "string", "enum": ["USER", "ADMIN"] },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Task": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "title": { "type": "string" },
+          "description": { "type": "string", "nullable": true },
+          "status": { "type": "string", "enum": ["PENDING", "IN_PROGRESS", "COMPLETED"] },
+          "priority": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH"] },
+          "dueDate": { "type": "string", "format": "date-time", "nullable": true },
+          "userId": { "type": "string", "format": "uuid" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "required": ["email", "password", "name"],
+        "properties": {
+          "name": { "type": "string", "minLength": 2, "maxLength": 50 },
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string", "minLength": 8, "description": "Must contain at least 1 uppercase letter and 1 numeric digit" }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string" }
+        }
+      },
+      "CreateTaskRequest": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": { "type": "string", "minLength": 3, "maxLength": 100 },
+          "description": { "type": "string", "maxLength": 1000 },
+          "status": { "type": "string", "enum": ["PENDING", "IN_PROGRESS", "COMPLETED"] },
+          "priority": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH"] },
+          "dueDate": { "type": "string", "format": "date-time", "nullable": true }
+        }
+      },
+      "UpdateTaskRequest": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string", "minLength": 3, "maxLength": 100 },
+          "description": { "type": "string", "maxLength": 1000 },
+          "status": { "type": "string", "enum": ["PENDING", "IN_PROGRESS", "COMPLETED"] },
+          "priority": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH"] },
+          "dueDate": { "type": "string", "format": "date-time", "nullable": true }
+        }
+      },
+      "UpdateRoleRequest": {
+        "type": "object",
+        "required": ["role"],
+        "properties": {
+          "role": { "type": "string", "enum": ["USER", "ADMIN"] }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "Register a new user",
+        "description": "Creates a new user profile in the system. The very first registered user will automatically be promoted to an ADMIN role to simplify testing operations.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RegisterRequest" }
+            }
+          }
+        },
+        "responses": {
+          "210": {
+            "description": "Registration successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "user": { "$ref": "#/components/schemas/User" },
+                        "token": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Validation failed / Invalid input parameters." },
+          "409": { "description": "A user with this email address already exists." }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Sign in user",
+        "description": "Authenticates credentials and issues a cryptographically signed JWT token.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "user": { "$ref": "#/components/schemas/User" },
+                        "token": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Invalid email or password." }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "summary": "Get authenticated user profile",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Profile details retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Access token is missing or expired." }
+        }
+      }
+    },
+    "/tasks": {
+      "get": {
+        "summary": "List tasks",
+        "description": "Retrieves task lists. Regular users only retrieve their own records (IDOR protected). Admins can toggle the `all=true` query parameter to query across all users.",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "status", "in": "query", "schema": { "type": "string", "enum": ["PENDING", "IN_PROGRESS", "COMPLETED"] }, "required": false },
+          { "name": "priority", "in": "query", "schema": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH"] }, "required": false },
+          { "name": "search", "in": "query", "schema": { "type": "string" }, "required": false, "description": "Fuzzy searches title and description" },
+          { "name": "all", "in": "query", "schema": { "type": "string" }, "required": false, "description": "Admin only: set 'true' to load all users' tasks" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tasks list retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": { "type": "array", "items": { "$ref": "#/components/schemas/Task" } }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized." }
+        }
+      },
+      "post": {
+        "summary": "Create a task",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateTaskRequest" }
+            }
+          }
+        },
+        "responses": {
+          "210": {
+            "description": "Task created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": { "$ref": "#/components/schemas/Task" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Validation failed." },
+          "401": { "description": "Unauthorized." }
+        }
+      }
+    },
+    "/tasks/{id}": {
+      "get": {
+        "summary": "Retrieve task details",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task details retrieved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": { "$ref": "#/components/schemas/Task" }
+                  }
+                }
+              }
+            }
+          },
+          "403": { "description": "IDOR Block: You are not authorized to view this task." },
+          "404": { "description": "Task not found." }
+        }
+      },
+      "put": {
+        "summary": "Update task",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateTaskRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Task updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": { "$ref": "#/components/schemas/Task" }
+                  }
+                }
+              }
+            }
+          },
+          "403": { "description": "IDOR Block: You are not authorized to modify this task." },
+          "404": { "description": "Task not found." }
+        }
+      },
+      "delete": {
+        "summary": "Delete task",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Task deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "403": { "description": "IDOR Block: You are not authorized to delete this task." },
+          "404": { "description": "Task not found." }
+        }
+      }
+    },
+    "/admin/stats": {
+      "get": {
+        "summary": "Get aggregate system statistics",
+        "description": "Returns counts for users and tasks grouped by priorities/statuses. Admin role authorization required.",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Stats calculations complete.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "totalUsers": { "type": "integer" },
+                        "totalTasks": { "type": "integer" },
+                        "tasksByStatus": {
+                          "type": "object",
+                          "properties": {
+                            "PENDING": { "type": "integer" },
+                            "IN_PROGRESS": { "type": "integer" },
+                            "COMPLETED": { "type": "integer" }
+                          }
+                        },
+                        "tasksByPriority": {
+                          "type": "object",
+                          "properties": {
+                            "LOW": { "type": "integer" },
+                            "MEDIUM": { "type": "integer" },
+                            "HIGH": { "type": "integer" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": { "description": "Admin access authorization denied." }
+        }
+      }
+    },
+    "/admin/users": {
+      "get": {
+        "summary": "List all registered user accounts",
+        "description": "Lists all user profiles in the database. Admin role authorization required.",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Users list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": { "type": "array", "items": { "$ref": "#/components/schemas/User" } }
+                  }
+                }
+              }
+            }
+          },
+          "403": { "description": "Admin access authorization denied." }
+        }
+      }
+    },
+    "/admin/users/{id}/role": {
+      "put": {
+        "summary": "Toggle user authorization role",
+        "description": "Promotes or demotes user authorization levels (USER vs ADMIN). Admin role authorization required.",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateRoleRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Role updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "data": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          },
+          "403": { "description": "Admin access authorization denied." },
+          "404": { "description": "User profile not found." }
+        }
+      }
+    }
+  }
+}
