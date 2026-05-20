@@ -128,7 +128,7 @@ export class TaskRepository {
       _count: {
         status: true,
       },
-    });
+    }) as unknown as { status: TaskStatus; _count: { status: number } }[];
   }
 
   async countGroupByPriority(): Promise<{ priority: TaskPriority; _count: { priority: number } }[]> {
@@ -137,7 +137,7 @@ export class TaskRepository {
       _count: {
         priority: true,
       },
-    });
+    }) as unknown as { priority: TaskPriority; _count: { priority: number } }[];
   }
 }
 
