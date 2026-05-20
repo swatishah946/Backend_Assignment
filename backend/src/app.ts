@@ -16,6 +16,9 @@ const openapiDocument = JSON.parse(fs.readFileSync(openapiPath, 'utf8'));
 
 const app = express();
 
+// Trust reverse proxy (Nginx)
+app.set('trust proxy', 1);
+
 // Serve Swagger Docs API Explorer
 app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(openapiDocument));
 
